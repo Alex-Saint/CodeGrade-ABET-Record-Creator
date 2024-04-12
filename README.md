@@ -16,3 +16,4 @@ The latest version of python3 will be needed, which can be downloaded/installed 
    If you don't have a CodeGrade username/password see [this](https://help.codegrade.com/faq/setting-up-a-password-for-my-account).
 6. Run: `python3 abet.py`
 7. Choose index of class to run ABET report on.
+8. See `ABET DATETIME` directory created for report.
