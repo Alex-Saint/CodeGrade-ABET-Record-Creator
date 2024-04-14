@@ -105,11 +105,12 @@ def createPDF(name, client, submission):
     # output grading
     pdf.multi_cell(200, 10, txt=grading, align='L')
     # output each code file
-    pdf.set_font("Courier", size=8)
     for f in zip_file.namelist():
         file = zip_file.open(f).read().decode("latin-1")
         pdf.add_page()
+        pdf.set_font("Arial", size=10, style="BU")
         pdf.multi_cell(200, 10, txt="{0}".format(f), align='L')
+        pdf.set_font("Courier", size=8)
         pdf.multi_cell(200, 10, txt="{0}".format(file), align='L')
     pdf.output(name)  # save
 
