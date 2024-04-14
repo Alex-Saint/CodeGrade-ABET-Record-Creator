@@ -84,13 +84,6 @@ def createPDF(name, client, submission):
         requests.get(submission_zip.url).content))
 
     pdf = FPDF()
-    # output each code file
-    pdf.set_font("Courier", size=8)
-    for f in zip_file.namelist():
-        file = zip_file.open(f).read().decode("latin-1")
-        pdf.add_page()
-        pdf.multi_cell(200, 10, txt="{0}".format(f), align='L')
-        pdf.multi_cell(200, 10, txt="{0}".format(file), align='L')
     # submission date/grade/general comments
     pdf.add_page()
     pdf.set_font("Arial", size=10)
@@ -104,9 +97,16 @@ def createPDF(name, client, submission):
             \n{2}\nCATEGORY GRADE: {3} out of {4}".format(
             rubric.header, rubric.description, details.description,
             details.achieved_points, details.points)
-    # output grading and save file
+    # output grading
     pdf.multi_cell(200, 10, txt=grading, align='L')
-    pdf.output(name)
+    # output each code file
+    pdf.set_font("Courier", size=8)
+    for f in zip_file.namelist():
+        file = zip_file.open(f).read().decode("latin-1")
+        pdf.add_page()
+        pdf.multi_cell(200, 10, txt="{0}".format(f), align='L')
+        pdf.multi_cell(200, 10, txt="{0}".format(file), align='L')
+    pdf.output(name)  # save
 
 
 # creates report for all assignments in single directory
