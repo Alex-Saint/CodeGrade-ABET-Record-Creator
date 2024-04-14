@@ -48,7 +48,7 @@ def getCourseAssignmentGrades(client, course):
         # get submissions and append each submission id/grade to array
         for s in client.assignment.get_all_submissions(assignment_id=course.assignments[i].id):
             if s.user.name.lower() != "test student":
-                assignments[i].append((s.id, s.grade))
+                assignments[i].append((s.id, round(s.grade, 2)))
     # sort each list of assignments ascending
     for i in range(len(assignments)):
         assignments[i] = Sort_Tuple(assignments[i])
@@ -58,19 +58,24 @@ def getCourseAssignmentGrades(client, course):
 
 # gets min/mid/max of passed assignments
 def getMinMedMaxAssignments(assignments):
+    howMany = int(input("How many sections is a record needed for? "))
     stats = []
     # find for each assignment
     for i in range(len(assignments)):
         # skip 0's
         min = 0
+        mid = int(len(assignments[i])/2-1)
+        max = len(assignments[i])-1
         while (assignments[i][min][1] == 0):
             min += 1
         # min/mid/max
-        stats.append((
-            assignments[i][min],
-            assignments[i][int(len(assignments[i])/2-1)],
-            assignments[i][len(assignments[i])-1]
-        ))
+        stats.append([])
+        for j in range(howMany):
+            stats[i].append((
+                assignments[i][min+j if min+j < len(assignments[i]) else min],
+                assignments[i][mid-j if mid-j >= 0 else mid],
+                assignments[i][max-j if max-j >= 0 else max]
+            ))
     return stats
 
 
@@ -113,20 +118,24 @@ def createPDF(name, client, submission):
 def createReport(client, stats):
     # create directory for report
     parentDirectory = os.getcwd()
-    directory = str("ABET {0}".format(datetime.datetime.now()))
-    coursePath = os.path.join(parentDirectory, directory)
-    os.mkdir(coursePath)
-    # run report for each assignment
-    for i in range(len(stats)):
-        print("Running Assignment {0} Report".format(i))
-        assignmentPath = os.path.join(coursePath, "Assignment {0}".format(i))
-        os.mkdir(assignmentPath)
-        # min/mid/max for assignment
-        for j in range(len(stats[i])):
-            filePath = "{0}/{1}".format(assignmentPath, "min.pdf" if j ==
-                                        0 else ("mid.pdf" if j == 1 else "max.pdf"))
-            createPDF(filePath, client,
-                      client.submission.get(submission_id=stats[i][j][0]))
+    for i in range(len(stats[0])):
+        print("Running Section 1{0} Record...".format(str(i+1).zfill(3)))
+        directory = str("1{0}_ABET Assignment Record {1}".format(
+            str(i+1).zfill(3), datetime.datetime.now()))
+        coursePath = os.path.join(parentDirectory, directory)
+        os.mkdir(coursePath)
+        # run report for each assignment
+        for assignmentNum in range(len(stats)):
+            print("Running Assignment {0} Record...".format(assignmentNum))
+            assignmentPath = os.path.join(
+                coursePath, "Assignment {0}".format(assignmentNum))
+            os.mkdir(assignmentPath)
+            # min/mid/max for assignment
+            for k in range(len(stats[assignmentNum][i])):
+                filePath = "{0}/{1}".format(assignmentPath, "min.pdf" if k ==
+                                            0 else ("mid.pdf" if k == 1 else "max.pdf"))
+                createPDF(filePath, client,
+                          client.submission.get(submission_id=stats[assignmentNum][i][k][0]))
 
 
 if __name__ == "__main__":
