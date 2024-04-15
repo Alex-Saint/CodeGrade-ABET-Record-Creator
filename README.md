@@ -16,4 +16,6 @@ The latest version of python3 will be needed, which can be downloaded/installed 
    If you don't have a CodeGrade username/password see [this](https://help.codegrade.com/faq/setting-up-a-password-for-my-account).
 6. Run: `python3 abet.py`
 7. Choose index of class to run ABET report on.
-8. See `ABET DATETIME` directory created for report.
+8. Choose how many sections to run ABET report on.
+9. See `SECTION_ABET Assignment Record DATETIME` directory created for report.
+10. Rename directory to proper section number/add assignment pdfs/upload to ABET drive. 
